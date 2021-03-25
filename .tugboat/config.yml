@@ -15,7 +15,7 @@ services:
         # Enable Apache 'rewrite' module for clean URLs.
         - a2enmod rewrite expires headers
         # Download Backdrop core.
-        - cd $TUGBOAT_ROOT && wget https://github.com/backdrop/backdrop/releases/download/1.18.1/backdrop.zip
+        - cd $TUGBOAT_ROOT && wget https://github.com/backdrop/backdrop/releases/download/1.18.2/backdrop.zip
         - cd $TUGBOAT_ROOT && unzip backdrop.zip && rm backdrop.zip
         # Link the document root to the expected path.
         - ln -snf $TUGBOAT_ROOT/backdrop $DOCROOT
