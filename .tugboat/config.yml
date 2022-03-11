@@ -1,6 +1,6 @@
 services:
   php:
-    image: tugboatqa/php:7.2-apache
+    image: tugboatqa/php:7.4-apache
     default: true
     alias_type: domain
     aliases:
@@ -43,7 +43,7 @@ services:
         # Generate and display a login URL.
         - cd $TUGBOAT_ROOT/backdrop && ../.tugboat/auto-login.sh
   mariadb:
-    image: tugboatqa/mariadb:latest
+    image: tugboatqa/mariadb:10.7
     commands:
       init:
         # Configure database for UTF-8: https://api.backdropcms.org/database-configuration#utf8mb4
