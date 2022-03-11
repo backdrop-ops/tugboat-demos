@@ -8,6 +8,8 @@ services:
     depends: mariadb
     commands:
       init:
+        # Make sure 'zip' can be installed: https://stackoverflow.com/a/64500821/4168619
+        - apt update && apt install -y libzip-dev
         # Configure PHP settings. Note the file renaming.
         - cp $TUGBOAT_ROOT/.tugboat/php.ini /usr/local/etc/php/conf.d/backdrop-php.ini
         # Install PHP 'zip' extension to allow installing Backdrop modules.
