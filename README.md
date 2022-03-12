@@ -17,3 +17,7 @@ Follow these steps to contribute to the development and testing of this repo:
 1. Create a new Tugboat project and add your fork to it.
 
 1. Build a preview of your branch in Tugboat.
+
+**Note that updates to this repo won't take effect until the
+[`latest`](https://github.com/backdrop-ops/tugboat-demos/releases/tag/latest)
+tag has also been updated (deleted and re-created).**
