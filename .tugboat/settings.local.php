@@ -8,6 +8,6 @@ $config_directories['active'] = 'files/config/active';
 $config_directories['staging'] = 'files/config/staging';
 
 // Trusted hosts.
-$settings['trusted_host_patterns'] = array('^.+\.tugboat\.qa$');
+$settings['trusted_host_patterns'] = array('^.+\.tugboat\.qa$', '^.+\.tugboatqa\.com$');
 
 // Miscellaneous.
