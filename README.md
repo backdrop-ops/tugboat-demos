@@ -10,7 +10,7 @@ Contribute
 Follow these steps to contribute to the development and testing of this repo:
 
 1. Register your own, free Tugboat account (you can sign up using your GitHub
-   login): https://dashboard.tugboat.qa/signup
+   login): https://dashboard.tugboatqa.com/signup
 
 1. Fork this repo, and add any changes you'd like to make to a new branch.
 
