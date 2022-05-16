@@ -20,4 +20,8 @@ Follow these steps to contribute to the development and testing of this repo:
 
 **Note that updates to this repo won't take effect until the
 [`latest`](https://github.com/backdrop-ops/tugboat-demos/releases/tag/latest)
-tag has also been updated (deleted and re-created).**
+tag has also been updated:**
+```
+git tag -f latest GIT_COMMIT_ID
+git push origin latest -f
+```
