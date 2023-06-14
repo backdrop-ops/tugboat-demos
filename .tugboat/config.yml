@@ -1,6 +1,6 @@
 services:
   php:
-    image: tugboatqa/php:8.1-apache
+    image: tugboatqa/php:8.1-apache-bullseye
     default: true
     alias_type: domain
     aliases:
@@ -30,26 +30,27 @@ services:
         - mkdir $TUGBOAT_ROOT/backdrop/files/config/active
         - mkdir $TUGBOAT_ROOT/backdrop/files/config/staging
       update:
-        # Set appropriate file permissions/ownership.
-        - chown -R www-data:www-data $TUGBOAT_ROOT/backdrop
-        - find $TUGBOAT_ROOT/backdrop/files $TUGBOAT_ROOT/backdrop/layouts $TUGBOAT_ROOT/backdrop/modules $TUGBOAT_ROOT/backdrop/themes -type d -exec chmod 2775 {} \;
-        - find $TUGBOAT_ROOT/backdrop/files $TUGBOAT_ROOT/backdrop/layouts $TUGBOAT_ROOT/backdrop/modules $TUGBOAT_ROOT/backdrop/themes -type f -exec chmod 0664 {} \;
+        # Set appropriate file permissions/ownership for installer/self-updater.
+        - cd $TUGBOAT_ROOT/backdrop && chown -R www-data:www-data files layouts modules themes core
+        - cd $TUGBOAT_ROOT/backdrop && find files layouts modules themes core -type d -exec chmod 2775 {} \;
+        - cd $TUGBOAT_ROOT/backdrop && find files layouts modules themes core -type f -exec chmod 0664 {} \;
         # Clear out active config (needed when rebuilding/reinstalling).
-        - find $TUGBOAT_ROOT/backdrop/files/config/active -mindepth 1 -delete
+        - cd $TUGBOAT_ROOT/backdrop && find files/config/active -mindepth 1 -delete
         # Install Backdrop.
+        - chmod +x $TUGBOAT_ROOT/backdrop/core/scripts/install.sh
         - cd $TUGBOAT_ROOT/backdrop && php ./core/scripts/install.sh --db-url=mysql://tugboat:tugboat@mariadb/tugboat --account-pass=password
         # Fix config permissions after install.
-        - chown -R www-data:www-data $TUGBOAT_ROOT/backdrop/files/config/active
-        - find $TUGBOAT_ROOT/backdrop/files/config/active -type f -exec chmod 0664 {} \;
+        - cd $TUGBOAT_ROOT/backdrop && chown -R www-data:www-data files/config/active
+        - cd $TUGBOAT_ROOT/backdrop && find files/config/active -type f -exec chmod 0664 {} \;
       build:
         # Generate and display a login URL.
         - cd $TUGBOAT_ROOT/backdrop && ../.tugboat/auto-login.sh
   mariadb:
-    image: tugboatqa/mariadb:10.7
+    image: tugboatqa/mariadb:lts
     commands:
       init:
         # Configure database for UTF-8: https://api.backdropcms.org/database-configuration#utf8mb4
         - echo "[mysqld]\ninnodb_large_prefix=true\ninnodb_file_format=barracuda\ninnodb_file_per_table=true" >> /etc/mysql/conf.d/utf8mb.conf
       update:
         # Drop and re-create the database (needed when rebuilding/reinstalling).
-        - mysqladmin -f drop tugboat && mysqladmin create tugboat
+        - mariadb-admin -f drop tugboat && mariadb-admin create tugboat
