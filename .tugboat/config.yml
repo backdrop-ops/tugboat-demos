@@ -8,12 +8,11 @@ services:
     depends: mariadb
     commands:
       init:
-        # Make sure 'zip' can be installed: https://stackoverflow.com/a/64500821/4168619
+        # Install PHP 'zip' extension to allow installing Backdrop modules.
         - apt update && apt install -y libzip-dev
+        - docker-php-ext-install zip opcache
         # Configure PHP settings. Note the file renaming.
         - cp $TUGBOAT_ROOT/.tugboat/php.ini /usr/local/etc/php/conf.d/backdrop-php.ini
-        # Install PHP 'zip' extension to allow installing Backdrop modules.
-        - docker-php-ext-install zip opcache
         # Enable Apache 'rewrite' module for clean URLs.
         - a2enmod rewrite expires headers
         # Download Backdrop core.
@@ -31,9 +30,9 @@ services:
         - mkdir $TUGBOAT_ROOT/backdrop/files/config/staging
       update:
         # Set appropriate file permissions/ownership.
-        - chown -R www-data:www-data $TUGBOAT_ROOT/backdrop
-        - find $TUGBOAT_ROOT/backdrop/files $TUGBOAT_ROOT/backdrop/layouts $TUGBOAT_ROOT/backdrop/modules $TUGBOAT_ROOT/backdrop/themes -type d -exec chmod 2775 {} \;
-        - find $TUGBOAT_ROOT/backdrop/files $TUGBOAT_ROOT/backdrop/layouts $TUGBOAT_ROOT/backdrop/modules $TUGBOAT_ROOT/backdrop/themes -type f -exec chmod 0664 {} \;
+        - cd $TUGBOAT_ROOT/backdrop && chown -R www-data:www-data files layouts modules themes core
+        - cd $TUGBOAT_ROOT/backdrop && find files layouts modules themes core -type d -exec chmod 2775 {} \;
+        - cd $TUGBOAT_ROOT/backdrop && find files layouts modules themes core -type f -exec chmod 0664 {} \;
         # Clear out active config (needed when rebuilding/reinstalling).
         - find $TUGBOAT_ROOT/backdrop/files/config/active -mindepth 1 -delete
         # Install Backdrop.
@@ -45,11 +44,11 @@ services:
         # Generate and display a login URL.
         - cd $TUGBOAT_ROOT/backdrop && ../.tugboat/auto-login.sh
   mariadb:
-    image: tugboatqa/mariadb:10.7
+    image: tugboatqa/mariadb:lts
     commands:
       init:
         # Configure database for UTF-8: https://api.backdropcms.org/database-configuration#utf8mb4
         - echo "[mysqld]\ninnodb_large_prefix=true\ninnodb_file_format=barracuda\ninnodb_file_per_table=true" >> /etc/mysql/conf.d/utf8mb.conf
       update:
         # Drop and re-create the database (needed when rebuilding/reinstalling).
-        - mysqladmin -f drop tugboat && mysqladmin create tugboat
+        - mariadb-admin -f drop tugboat && mariadb-admin create tugboat
