@@ -1,11 +1,11 @@
-Tugboat Demos
-=============
+# Tugboat Demos
+---
 
 This repo is used to spin up demo sites for
 [BackdropCMS.org](https://backdropcms.org/demo).
 
-Contribute
-----------
+## Contribute
+---
 
 Follow these steps to contribute to the development and testing of this repo:
 
@@ -25,3 +25,7 @@ tag has also been updated:**
 git tag -f latest GIT_COMMIT_ID
 git push origin latest -f
 ```
+## Updating the Tugboat demos after a new Backdrop release
+---
+
+See: https://github.com/backdrop/backdrop-issues/wiki/Update:-Tugboat
